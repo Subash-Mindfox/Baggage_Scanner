@@ -302,251 +302,237 @@ def save_tensor_as_image(tensor, path):
 
 ## RESIZING TEST IMAGES
 
-test_count = len(df_test_images)
-image_tensor_list = []
-filenames_list = []
-object_locations_list = []
+def write_voc_csv(
+    csv_path,
+    filename,
+    img_shape,
+    annotation_dict
+):
+    """
+    Writes Pascal VOC style annotations into a CSV file.
 
-new_image_crop = []
-csv_path = "Temp\Test\_annotationstest.csv"
-create_csv_if_not_exists(csv_path)
-for fi in range(test_count):
-  ######################################################################################################
-  ################################################### ORIGINAL ###################################################
-  ######################################################################################################  
-  ann_pic_path = df_test_images['path'][fi]
-  ann_pic_name = df_test_images['filename'][fi]
-  
-  
-  ann_pic = read_image(ann_pic_path)
-  # print(f"{fi}/{test_count} <> {ann_pic_name}")
+    CSV Header:
+    filename,width,height,depth,class,pose,truncated,difficult,xmin,ymin,xmax,ymax
 
-  # show_image(torch_to_np(ann_pic))
-  filenames_list.append(ann_pic_name)
+    annotation_dict format:
+    {
+        idx: [label, [xmin, ymin, xmax, ymax]]
+    }
+    """
 
+    # Image metadata
+    height, width = img_shape[:2]
+    depth = 1 if len(img_shape) == 2 else img_shape[2]
 
+    file_exists = os.path.exists(csv_path)
 
-  ######################################################################################################
-  ################################################### ORIGINAL WITH BOXES ###################################################
-  ######################################################################################################
+    with open(csv_path, "a", newline="") as f:
+        writer = csv.writer(f)
 
+        # Write header only once
+        if not file_exists:
+            writer.writerow([
+                "filename","width","height","depth",
+                "class","pose","truncated","difficult",
+                "xmin","ymin","xmax","ymax"
+            ])
 
-  # xml_file_path = os.path.join(r"C:\Users\Gaura\OneDrive\Desktop\GAURAV\Unimleb\COMP90051\Statisitcal_Machine_Learning_Project\XRay\Train\Annotations", ann_pic_name[:-4] + ".xml")
-  xml_file_path = os.path.join('Test', 'Annotations', ann_pic_name[:-4] + ".xml")
+        # Write one row per object
+        for _, (label, box) in annotation_dict.items():
+            xmin, ymin, xmax, ymax = box
 
-  tree = ET.parse(xml_file_path)
-  root = tree.getroot()
-
-  # i = 0
-  # obj_id = []
-  # for child in root:
-  #   if (child.tag == "object"):
-  #     obj_id.append(i)
-  #   i += 1
-
-  # dim_dic = {}
-  # count = 0
-  # for i in obj_id:
-  #   dim_dic[count] = {}
-  #   dim_dic[count]["xmin"] = int(root[i][4][0].text)
-  #   dim_dic[count]["ymin"] = int(root[i][4][1].text)
-  #   dim_dic[count]["xmax"] = int(root[i][4][2].text)
-  #   dim_dic[count]["ymax"] = int(root[i][4][3].text)
-  #   dim_dic[count]["name"] = root[i][0].text
-  #   count += 1
-  # dim_dic
-
-  # boxes = []
-  # labels = []
-  # for key, value in dim_dic.items():
-  #     boxes.append([value['xmin'], value['ymin'], value['xmax'], value['ymax']])
-  #     labels.append(value['name'])
-
-  # boxes_tensor = torch.tensor(boxes, dtype=torch.float32)
-  # image_with_boxes = draw_bounding_boxes(ann_pic, boxes_tensor, labels=labels, colors="red", width=3)
-
-  # show_image(torch_to_np(image_with_boxes))
-
-  # image_with_boxes_pil = torchvision.transforms.ToPILImage()(image_with_boxes)
-  # plt.imshow(image_with_boxes_pil)
-  # plt.title("Image with Bounding Boxes")
-  # plt.axis("off")  
-  # plt.show()
+            writer.writerow([
+                filename,
+                width,
+                height,
+                depth,
+                label,
+                "Unspecified",  # pose
+                0,              # truncated
+                0,              # difficult
+                xmin,
+                ymin,
+                xmax,
+                ymax
+            ])
 
 
-  ######################################################################################################
-  ################################################### NO WHITE SPACES ###################################################
-  ######################################################################################################
+def process_dataset(
+    df_images,
+    csv_path,
+    dataset_name="test"
+):
+    """
+    Creates image tensors, filenames, object locations,
+    and writes Pascal VOC-style annotations to CSV.
 
-  hld = 99.9
-  seg_size, h_tran, v_tran, no_whi_np = remove_white(im = torch_to_np(ann_pic), v_whiteness_threshold = hld, h_whiteness_threshold = hld, seg_wid = 1)
-  # show_image(no_whi_np)
+    Parameters
+    ----------
+    df_images : pandas.DataFrame
+        Must contain columns: ['filename', 'tensor']
+    csv_path : str
+        Output CSV path
+    dataset_name : str
+        'train' | 'test' | 'val' (for logging)
+
+    Returns
+    -------
+    image_tensor_list : list[torch.Tensor]
+    filenames_list : list[str]
+    object_locations_list : list[dict]
+    """
+
+    # ---------------- INIT ----------------
+    count = len(df_images)
+
+    image_tensor_list = []
+    filenames_list = []
+    object_locations_list = []
+
+    # Ensure CSV exists
+    create_csv_if_not_exists(csv_path)
+
+    # ---------------- LOOP ----------------
+    for fi in range(count):
+        try:
+            # ---------- READ IMAGE ----------
+            ann_pic = df_images.loc[fi, "tensor"]
+            ann_pic_name = df_images.loc[fi, "filename"]
+
+            filenames_list.append(ann_pic_name)
+
+            # ---------- REMOVE WHITE ----------
+            hld = 99.9
+            seg_size, h_tran, v_tran, no_whi_np = remove_white(
+                im=torch_to_np_safe(ann_pic),
+                v_whiteness_threshold=hld,
+                h_whiteness_threshold=hld,
+                seg_wid=1
+            )
+
+            # ---------- READ XML ----------
+            xml_path = ann_pic_name.replace(".jpg", ".xml")
+            tree = ET.parse(xml_path)
+            root = tree.getroot()
+
+            # ---------- EXTRACT BBOX ----------
+            dim_dic = {}
+            count_obj = 0
+
+            for child in root:
+                if child.tag == "object":
+                    bbox = child.find("bndbox")
+                    dim_dic[count_obj] = {
+                        "xmin": int(bbox.find("xmin").text),
+                        "ymin": int(bbox.find("ymin").text),
+                        "xmax": int(bbox.find("xmax").text),
+                        "ymax": int(bbox.find("ymax").text),
+                        "name": child.find("name").text
+                    }
+                    count_obj += 1
+
+            # ---------- ORIGINAL BOXES ----------
+            bbox0 = np.array([
+                [v["ymin"], v["xmin"], v["ymax"], v["xmax"]]
+                for v in dim_dic.values()
+            ])
+
+            # ---------- MAP BOXES AFTER WHITE REMOVAL ----------
+            w_bbox = []
+            for box in bbox0:
+                y_min, x_min, y_max, x_max = box
+
+                y_min_seg = max(y_min // seg_size, min(v_tran.keys()))
+                x_min_seg = max(x_min // seg_size, min(h_tran.keys()))
+                y_max_seg = min(y_max // seg_size, max(v_tran.keys()))
+                x_max_seg = min(x_max // seg_size, max(h_tran.keys()))
+
+                if v_tran[y_min_seg] == -1:
+                    y_min_seg = get_nearest_obj(v_tran, y_min_seg)
+                if h_tran[x_min_seg] == -1:
+                    x_min_seg = get_nearest_obj(h_tran, x_min_seg)
+                if v_tran[y_max_seg] == -1:
+                    y_max_seg = get_nearest_obj(v_tran, y_max_seg)
+                if h_tran[x_max_seg] == -1:
+                    x_max_seg = get_nearest_obj(h_tran, x_max_seg)
+
+                w_ymin = seg_size * v_tran[y_min_seg] + y_min % seg_size
+                w_xmin = seg_size * h_tran[x_min_seg] + x_min % seg_size
+                w_ymax = seg_size * v_tran[y_max_seg] + y_max % seg_size
+                w_xmax = seg_size * h_tran[x_max_seg] + x_max % seg_size
+
+                w_bbox.append([w_xmin, w_ymin, w_xmax, w_ymax])
+
+            # ---------- ROTATE BOXES ----------
+            rot_boxes = []
+            for box in w_bbox:
+                x1, y1, x2, y2 = box
+                rx1, ry1 = rotated_this(x1, y1, no_whi_np.shape[1], no_whi_np.shape[0])
+                rx2, ry2 = rotated_this(x2, y2, no_whi_np.shape[1], no_whi_np.shape[0])
+                rot_boxes.append([ry2, rx1, ry1, rx2])
+
+            # ---------- REFLECT BOXES ----------
+            h_max, w_max, _ = no_whi_np.shape
+            W_boxes = []
+            for bx in rot_boxes:
+                wmin_, hmin_, wmax_, hmax_ = bx
+                W_boxes.append([
+                    reflect(wmax_, w_max),
+                    hmin_,
+                    reflect(wmin_, w_max),
+                    hmax_
+                ])
+
+            # ---------- TRANSFORM IMAGE ----------
+            transform = BaseTransform(transform_="medium")
+            transformed_pic = transform(np_to_torch(no_whi_np))
+            transformed_pic_np = torch_to_np(transformed_pic)
+
+            # ---------- RESIZE BOXES ----------
+            Hratio = transformed_pic_np.shape[1] / no_whi_np.shape[1]
+            Wratio = transformed_pic_np.shape[0] / no_whi_np.shape[0]
+            ratioLst = [Wratio, Hratio, Wratio, Hratio]
+
+            w_bbox_r = [
+                [int(abs(a * b)) for a, b in zip(box, ratioLst)]
+                for box in W_boxes
+            ]
+
+            # ---------- FINAL OBJECT DICT ----------
+            labels = [v["name"] for v in dim_dic.values()]
+            final_obj_location_dict = {
+                i: [labels[i], w_bbox_r[i]]
+                for i in range(len(labels))
+            }
+
+            # ---------- STORE OUTPUT ----------
+            image_tensor_list.append(transformed_pic)
+            object_locations_list.append(final_obj_location_dict)
+
+            # ---------- WRITE CSV ----------
+            write_voc_csv(
+                csv_path=csv_path,
+                filename=ann_pic_name,
+                img_shape=transformed_pic_np.shape,
+                annotation_dict=final_obj_location_dict
+            )
+
+            print(f"[{dataset_name.upper()}] {fi+1}/{count} <> {ann_pic_name}")
+
+        except Exception as e:
+            print(f"[{dataset_name.upper()} ERROR] {fi}/{count} <> {e}")
+
+    return image_tensor_list, filenames_list, object_locations_list
 
 
-  ########## EXTRACTING object location from annotation files ##########
-  i = 0
-  obj_id = []
-  for child in root:
-    if (child.tag == "object"):
-      obj_id.append(i)
-    i += 1
+test_images, test_files, test_objs = process_dataset(
+    df_images=df_test_images,
+    csv_path=r"Temp\Test\_annotationstest.csv",
+    dataset_name="test"
+)
 
-  dim_dic = {}
-  count = 0
-  for i in obj_id:
-    dim_dic[count] = {}
-    dim_dic[count]["xmin"] = int(root[i][4][0].text)
-    dim_dic[count]["ymin"] = int(root[i][4][1].text)
-    dim_dic[count]["xmax"] = int(root[i][4][2].text)
-    dim_dic[count]["ymax"] = int(root[i][4][3].text)
-    dim_dic[count]["name"] = root[i][0].text
-    count += 1
-
-  
-  bbox0_list = []
-  for bb in dim_dic.values():
-    temp = []
-    temp.append(bb["ymin"])
-    temp.append(bb["xmin"])
-    temp.append(bb["ymax"])
-    temp.append(bb["xmax"])
-    bbox0_list.append(temp)
-  bbox0 = np.array(bbox0_list)
-  c_bbox = bbox0
-
-  ######################################################################################################
-  ################################################### Objects location after Removing white space ###################################################
-  ##################################################################################################
-
-
-  w_bbox = []
-  for box in c_bbox: 
-    temp_box = []
-    y_min = box[0]
-    x_min = box[1]
-    y_max = box[2]
-    x_max = box[3]
-    y_min_seg = y_min//seg_size
-    x_min_seg = x_min//seg_size  
-    y_max_seg = y_max//seg_size
-    x_max_seg = x_max//seg_size
-
-    # y_min_seg = y_min//seg_size
-    # x_min_seg = x_min//seg_size  
-    # y_max_seg = y_max//seg_size
-    # x_max_seg = x_max//seg_size
-
-    if (x_min_seg <= 0):
-      x_min_seg = min(h_tran.keys())
-    if (y_min_seg <= 0):
-      y_min_seg = min(v_tran.keys())
-    if (x_max_seg >= len(h_tran)):
-      x_max_seg = max(h_tran.keys())
-    if (y_max_seg >= len(v_tran)):
-      y_max_seg = max(v_tran.keys())
-
-    if (v_tran[y_min_seg] == -1):
-      y_min_seg = get_nearest_obj(tran_dic = v_tran, seg_X = y_min_seg)
-    if (h_tran[x_min_seg] == -1):
-      x_min_seg = get_nearest_obj(tran_dic = h_tran, seg_X = x_min_seg)
-    if (v_tran[y_max_seg] == -1):
-      y_max_seg = get_nearest_obj(tran_dic = v_tran, seg_X = y_max_seg)
-    if (h_tran[x_max_seg] == -1):
-      x_max_seg = get_nearest_obj(tran_dic = h_tran, seg_X = x_max_seg)
-
-    w_y_min = seg_size*v_tran[y_min_seg] + y_min%seg_size
-    w_x_min = seg_size*h_tran[x_min_seg] + x_min%seg_size
-    w_y_max = seg_size*v_tran[y_max_seg] + y_max%seg_size
-    w_x_max = seg_size*h_tran[x_max_seg] + x_max%seg_size
-
-    temp_box.append(w_y_min)
-    temp_box.append(w_x_min)
-    temp_box.append(w_y_max)
-    temp_box.append(w_x_max)
-    w_bbox.append(temp_box)
-
-  # boxes = []
-  labels = []
-  for key, value in dim_dic.items():
-      # boxes.append([value['xmin'], value['ymin'], value['xmax'], value['ymax']])
-      labels.append(value['name'])
-
-  rot_c_bbox = []
-  for box in w_bbox:
-      rot_x1, rot_y1 = rotated_this(old_x = box[1], old_y =box[0], xmax=no_whi_np.shape[1], ymax=no_whi_np.shape[0])
-      rot_x2, rot_y2 = rotated_this(old_x = box[3], old_y =box[2], xmax=no_whi_np.shape[1], ymax=no_whi_np.shape[0])
-      rot_c_bbox.append([ rot_y2, rot_x1, rot_y1, rot_x2])
-  W_boxes = [[int(x) for x in row] for row in rot_c_bbox]
-
-
-  h_max, w_max, _ = no_whi_np.shape
-  res = []
-  for bx in W_boxes:
-      wmin_, hmin_, wmax_, hmax_ = bx[0], bx[1], bx[2], bx[3],
-      this_box_X = [reflect(old_w = wmax_, w_max = w_max),  hmin_, reflect(old_w = wmin_, w_max = w_max),  hmax_]
-      res.append(this_box_X)
-
-  W_boxes = res
-
-  # boxes_tensor = torch.tensor(W_boxes, dtype=torch.float32)
-  # image_with_boxes = draw_bounding_boxes(np_to_torch(no_whi_np), boxes_tensor, labels=labels, colors="red", width=3)
-  # show_image(torch_to_np(image_with_boxes))
-
-  ######################################################################################################
-  ################################################### Resizing to 584 x 688 ###################################################
-  ##################################################################################################
-
-  # transform = BaseTransform(transform_= "light")
-  transform = BaseTransform(transform_= "medium")
-  # transform = BaseTransform(transform_= "dark")
-  transformed_pic = transform(np_to_torch(no_whi_np))
-
-  transformed_pic_np = torch_to_np(transformed_pic)
-  Hratio = transformed_pic_np.shape[1]/no_whi_np.shape[1]
-  Wratio = transformed_pic_np.shape[0]/no_whi_np.shape[0]
-
-  ratioLst = [Hratio, Wratio, Hratio, Wratio]
-  w_bbox_r = []
-  for box in W_boxes:
-      box = [abs(int(a * b)) for a, b in zip(box, ratioLst)] 
-      w_bbox_r.append(box)
-  
-  final_obj_location_dict = {}
-  for label_index in range(len(labels)):
-    final_obj_location_dict[label_index] = [labels[label_index], w_bbox_r[label_index]]
-    
-  os.makedirs("Temp\Test\Images", exist_ok=True)
-  
-  filePath = "Temp\Test\Images" + ann_pic_name
-  shape,mode = save_tensor_as_image(transformed_pic,filePath)
-  new_image_crop.append([ann_pic_name,filePath,shape[1],shape[0],mode])
-  with open(csv_path, "a", newline="") as f:
-    writer = csv.writer(f)
-    for k in final_obj_location_dict:
-      label, box = final_obj_location_dict[k]
-      ymin = box[0]
-      xmin = box[1]
-      ymax = box[2]
-      xmax = box[3]
-            
-      writer.writerow([
-        ann_pic_name,
-        shape[1],
-        shape[0],
-        shape[2],
-        label,
-        xmin,
-        ymin,
-        xmax,
-        ymax
-      ])
-    
-
-  #image_tensor_list.append(transformed_pic)
-  #object_locations_list.append(final_obj_location_dict)
-  print(f"{fi}/{test_count} <> {ann_pic_name} <> final_obj_location_dict = {final_obj_location_dict}")
-  # boxes_tensor = torch.tensor(w_bbox_r, dtype=torch.float32)
-  # resized_image_with_boxes = draw_bounding_boxes(transformed_pic, boxes_tensor, labels=labels, colors="red", width=3)
-  # show_image(torch_to_np(resized_image_with_boxes), convert = False)
-  
-
+train_images, train_files, train_objs = process_dataset(
+    df_images=df_train_images,
+    csv_path=r"Temp\Train\_annotationstrain.csv",
+    dataset_name="train"
+)
