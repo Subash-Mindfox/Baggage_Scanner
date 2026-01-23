@@ -1,0 +1,38 @@
+<annotation>
+	<folder>Sixray less than 500</folder>
+	<filename>P04498.jpg</filename>
+	<path>D:\Users\Joseph.ROSE-WS3A\Desktop\Sixray less than 500\P04498.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>445</width>
+		<height>656</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>wrench</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>179</xmin>
+			<ymin>389</ymin>
+			<xmax>213</xmax>
+			<ymax>499</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>plier</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>277</xmin>
+			<ymin>325</ymin>
+			<xmax>342</xmax>
+			<ymax>408</ymax>
+		</bndbox>
+	</object>
+</annotation>

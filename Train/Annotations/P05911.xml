@@ -1,0 +1,50 @@
+<annotation>
+	<folder>Sixray annotation 500</folder>
+	<filename>P05911.jpg</filename>
+	<path>D:\Users\Joseph.ROSE-WS3A\Desktop\labelImg\data\Sixray annotation 500\P05911.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>1139</width>
+		<height>650</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>plier</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>150</xmin>
+			<ymin>415</ymin>
+			<xmax>237</xmax>
+			<ymax>545</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>plier</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>114</xmin>
+			<ymin>493</ymin>
+			<xmax>261</xmax>
+			<ymax>538</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>plier</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>183</xmin>
+			<ymin>397</ymin>
+			<xmax>228</xmax>
+			<ymax>549</ymax>
+		</bndbox>
+	</object>
+</annotation>

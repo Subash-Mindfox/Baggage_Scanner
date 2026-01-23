@@ -1,0 +1,38 @@
+<annotation>
+	<folder>Sixray annotation 500</folder>
+	<filename>P07440.jpg</filename>
+	<path>D:\Users\Joseph.ROSE-WS3A\Desktop\labelImg\data\Sixray annotation 500\P07440.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>632</width>
+		<height>664</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>plier</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>439</xmin>
+			<ymin>215</ymin>
+			<xmax>602</xmax>
+			<ymax>307</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>plier</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>365</xmin>
+			<ymin>227</ymin>
+			<xmax>483</xmax>
+			<ymax>308</ymax>
+		</bndbox>
+	</object>
+</annotation>

@@ -1,0 +1,50 @@
+<annotation>
+	<folder>Sixray less than 500</folder>
+	<filename>P07072.jpg</filename>
+	<path>D:\Users\Joseph.ROSE-WS3A\Desktop\Sixray less than 500\P07072.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>309</width>
+		<height>407</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>scissor</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>98</xmin>
+			<ymin>226</ymin>
+			<xmax>137</xmax>
+			<ymax>289</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>scissor</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>217</xmin>
+			<ymin>166</ymin>
+			<xmax>264</xmax>
+			<ymax>259</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>scissor</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>243</xmin>
+			<ymin>198</ymin>
+			<xmax>266</xmax>
+			<ymax>277</ymax>
+		</bndbox>
+	</object>
+</annotation>

@@ -1,0 +1,38 @@
+<annotation>
+	<folder>Sixray less than 500</folder>
+	<filename>P07828.jpg</filename>
+	<path>D:\Users\Joseph.ROSE-WS3A\Desktop\Sixray less than 500\P07828.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>763</width>
+		<height>488</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>scissor</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>510</xmin>
+			<ymin>306</ymin>
+			<xmax>553</xmax>
+			<ymax>352</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>plier</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>557</xmin>
+			<ymin>258</ymin>
+			<xmax>619</xmax>
+			<ymax>320</ymax>
+		</bndbox>
+	</object>
+</annotation>

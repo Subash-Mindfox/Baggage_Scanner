@@ -1,0 +1,38 @@
+<annotation>
+	<folder>Sixray annotation 500</folder>
+	<filename>P07883.jpg</filename>
+	<path>D:\Users\Joseph.ROSE-WS3A\Desktop\Sixray annotation 500\P07883.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>516</width>
+		<height>689</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>wrench</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>41</xmin>
+			<ymin>420</ymin>
+			<xmax>179</xmax>
+			<ymax>458</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>plier</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>36</xmin>
+			<ymin>374</ymin>
+			<xmax>184</xmax>
+			<ymax>416</ymax>
+		</bndbox>
+	</object>
+</annotation>

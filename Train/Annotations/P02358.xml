@@ -1,0 +1,26 @@
+<annotation>
+	<folder>Sixray annotation 500</folder>
+	<filename>P02358.jpg</filename>
+	<path>D:\Users\Joseph.ROSE-WS3A\Desktop\labelImg\data\Sixray annotation 500\P02358.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>715</width>
+		<height>537</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>gun</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>479</xmin>
+			<ymin>122</ymin>
+			<xmax>621</xmax>
+			<ymax>264</ymax>
+		</bndbox>
+	</object>
+</annotation>

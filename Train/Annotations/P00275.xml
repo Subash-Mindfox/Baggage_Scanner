@@ -1,0 +1,26 @@
+<annotation>
+	<folder>Sixray less than 500</folder>
+	<filename>P00275.jpg</filename>
+	<path>D:\Users\Joseph.ROSE-WS3A\Desktop\Sixray less than 500\P00275.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>792</width>
+		<height>474</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>knife</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>246</xmin>
+			<ymin>251</ymin>
+			<xmax>609</xmax>
+			<ymax>362</ymax>
+		</bndbox>
+	</object>
+</annotation>

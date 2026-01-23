@@ -1,0 +1,26 @@
+<annotation>
+	<folder>Sixray annotation 500</folder>
+	<filename>P03221.jpg</filename>
+	<path>D:\Users\Joseph.ROSE-WS3A\Desktop\Sixray annotation 500\P03221.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>565</width>
+		<height>565</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>knife</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>82</xmin>
+			<ymin>350</ymin>
+			<xmax>385</xmax>
+			<ymax>461</ymax>
+		</bndbox>
+	</object>
+</annotation>

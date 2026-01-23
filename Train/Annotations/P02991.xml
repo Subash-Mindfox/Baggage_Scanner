@@ -1,0 +1,26 @@
+<annotation>
+	<folder>Sixray less than 500</folder>
+	<filename>P02991.jpg</filename>
+	<path>D:\Users\Joseph.ROSE-WS3A\Desktop\Sixray less than 500\P02991.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>798</width>
+		<height>464</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>gun</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>465</xmin>
+			<ymin>307</ymin>
+			<xmax>614</xmax>
+			<ymax>381</ymax>
+		</bndbox>
+	</object>
+</annotation>

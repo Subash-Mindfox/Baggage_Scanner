@@ -1,0 +1,26 @@
+<annotation>
+	<folder>Sixray less than 500 raw image</folder>
+	<filename>P06981.jpg</filename>
+	<path>D:\Users\Joseph.ROSE-WS3A\Desktop\Sixray less than 500\Sixray less than 500 raw image\P06981.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>382</width>
+		<height>710</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>plier</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>165</xmin>
+			<ymin>343</ymin>
+			<xmax>271</xmax>
+			<ymax>395</ymax>
+		</bndbox>
+	</object>
+</annotation>

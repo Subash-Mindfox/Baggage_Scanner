@@ -1,0 +1,26 @@
+<annotation>
+	<folder>Sixray less than 500 raw image</folder>
+	<filename>P06380.jpg</filename>
+	<path>D:\Users\Joseph.ROSE-WS3A\Desktop\Sixray less than 500\Sixray less than 500 raw image\P06380.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>253</width>
+		<height>991</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>knife</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>41</xmin>
+			<ymin>560</ymin>
+			<xmax>99</xmax>
+			<ymax>715</ymax>
+		</bndbox>
+	</object>
+</annotation>

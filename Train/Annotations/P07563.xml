@@ -1,0 +1,26 @@
+<annotation>
+	<folder>Sixray less than 500 raw image</folder>
+	<filename>P07563.jpg</filename>
+	<path>D:\Users\Joseph.ROSE-WS3A\Desktop\Sixray less than 500\Sixray less than 500 raw image\P07563.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>221</width>
+		<height>285</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>wrench</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>47</xmin>
+			<ymin>83</ymin>
+			<xmax>135</xmax>
+			<ymax>238</ymax>
+		</bndbox>
+	</object>
+</annotation>

@@ -1,0 +1,26 @@
+<annotation>
+	<folder>Sixray less than 500 raw image</folder>
+	<filename>P05988.jpg</filename>
+	<path>D:\Users\Joseph.ROSE-WS3A\Desktop\Sixray less than 500\Sixray less than 500 raw image\P05988.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>741</width>
+		<height>498</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>scissor</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>78</xmin>
+			<ymin>208</ymin>
+			<xmax>103</xmax>
+			<ymax>323</ymax>
+		</bndbox>
+	</object>
+</annotation>

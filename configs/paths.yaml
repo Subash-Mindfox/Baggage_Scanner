@@ -1,0 +1,5 @@
+paths:
+  trainingImages : Train\Images
+  trainningAnnot_file : Train\train_annotations.csv
+  testImages : Test\Images
+  testAnnot_file : Test\test_annotations.csv

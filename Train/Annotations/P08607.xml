@@ -1,0 +1,38 @@
+<annotation>
+	<folder>Sixray 500 raw image</folder>
+	<filename>P08607.jpg</filename>
+	<path>D:\Users\Joseph.ROSE-WS3A\Desktop\Sixray 500\Sixray 500 raw image\P08607.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>571</width>
+		<height>520</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>plier</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>179</xmin>
+			<ymin>247</ymin>
+			<xmax>325</xmax>
+			<ymax>376</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>plier</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>191</xmin>
+			<ymin>215</ymin>
+			<xmax>244</xmax>
+			<ymax>369</ymax>
+		</bndbox>
+	</object>
+</annotation>

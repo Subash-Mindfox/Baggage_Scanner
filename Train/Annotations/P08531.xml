@@ -1,0 +1,38 @@
+<annotation>
+	<folder>Sixray 500 raw image</folder>
+	<filename>P08531.jpg</filename>
+	<path>D:\Users\Joseph.ROSE-WS3A\Desktop\Sixray 500\Sixray 500 raw image\P08531.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>516</width>
+		<height>660</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>scissor</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>1</difficult>
+		<bndbox>
+			<xmin>263</xmin>
+			<ymin>265</ymin>
+			<xmax>394</xmax>
+			<ymax>327</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>scissor</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>171</xmin>
+			<ymin>182</ymin>
+			<xmax>248</xmax>
+			<ymax>224</ymax>
+		</bndbox>
+	</object>
+</annotation>
