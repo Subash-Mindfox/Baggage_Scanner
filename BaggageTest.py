@@ -416,7 +416,7 @@ def process_dataset(
             )
 
             # ---------- READ XML ----------
-            xml_path = os.path.join('Test', 'Annotations', ann_pic_name[:-4] + ".xml")
+            xml_path = os.path.join(dataset_name, 'Annotations', ann_pic_name[:-4] + ".xml")
             tree = ET.parse(xml_path)
             root = tree.getroot()
 
@@ -556,14 +556,14 @@ def process_dataset(
     return new_image_crop, filenames_list, object_locations_list
 
 
-test_images, test_files, test_objs = process_dataset(
-    df_images=df_test_images,
-    csv_path=r"Temp\Test\_annotationstest.csv",
-    dataset_name="test"
-)
-
 train_images, train_files, train_objs = process_dataset(
     df_images=df_train_images,
     csv_path=r"Temp\Train\_annotationstrain.csv",
-    dataset_name="train"
+    dataset_name="Train"
+)
+
+test_images, test_files, test_objs = process_dataset(
+    df_images=df_test_images,
+    csv_path=r"Temp\Test\_annotationstest.csv",
+    dataset_name="Test"
 )
