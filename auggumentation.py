@@ -18,6 +18,31 @@ import csv
 import random
 
 
+
+def compute_csv_stats(csv_path, name):
+    try:
+        # Load the CSV into a DataFrame
+        df = pd.read_csv(csv_path)
+
+        # Display basic stats
+        print(f"--- Stats for {name} ---")
+        print(f"Total Rows: {len(df)}")
+        print(f"Unique Images: {df['filename'].nunique()}")
+
+        # Show a summary of the dataset (describe numeric fields)
+        print("\nSummary Statistics:")
+        print(df.describe())
+
+        # Add a blank line after each section for readability
+        print("\n" * 3)
+
+        # Return the DataFrame for later use
+        return df
+
+    except Exception as e:
+        print(f"An error occurred while processing {name}: {e}")
+        return None  # Return None if there's an error
+
 def get_image_dataframe_lazy(image_folder, name):
     """
     Create a DataFrame with image metadata only (NO tensors).
@@ -60,30 +85,7 @@ def get_image_dataframe_lazy(image_folder, name):
 
     return df
 
-def compute_csv_stats(csv_path, name):
-    try:
-        # Load the CSV into a DataFrame
-        df = pd.read_csv(csv_path)
-
-        # Display basic stats
-        print(f"--- Stats for {name} ---")
-        print(f"Total Rows: {len(df)}")
-        print(f"Unique Images: {df['filename'].nunique()}")
-
-        # Show a summary of the dataset (describe numeric fields)
-        print("\nSummary Statistics:")
-        print(df.describe())
-
-        # Add a blank line after each section for readability
-        print("\n" * 3)
-
-        # Return the DataFrame for later use
-        return df
-
-    except Exception as e:
-        print(f"An error occurred while processing {name}: {e}")
-        return None  # Return None if there's an error
-    
+ 
 
 df_train_images = get_image_dataframe_lazy(
     "Temp\Train", "Training Images"
