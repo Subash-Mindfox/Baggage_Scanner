@@ -388,30 +388,35 @@ def process_dataset(
     image_tensor_list = []
     filenames_list = []
     object_locations_list = []
+    new_image_crop = []
+    datapath = f"Temp\{dataset_name}\Images"
+    os.makedirs(datapath, exist_ok=True)
 
     # Ensure CSV exists
     create_csv_if_not_exists(csv_path)
+    
 
     # ---------------- LOOP ----------------
     for fi in range(count):
         try:
             # ---------- READ IMAGE ----------
-            ann_pic = df_images.loc[fi, "tensor"]
-            ann_pic_name = df_images.loc[fi, "filename"]
-
+            ann_pic_path = df_images["path"][fi]
+            ann_pic_name = df_images["filename"][fi]
+            
+            ann_pic = read_image(ann_pic_path)
             filenames_list.append(ann_pic_name)
 
             # ---------- REMOVE WHITE ----------
             hld = 99.9
             seg_size, h_tran, v_tran, no_whi_np = remove_white(
-                im=torch_to_np_safe(ann_pic),
+                im=torch_to_np(ann_pic),
                 v_whiteness_threshold=hld,
                 h_whiteness_threshold=hld,
                 seg_wid=1
             )
 
             # ---------- READ XML ----------
-            xml_path = ann_pic_name.replace(".jpg", ".xml")
+            xml_path = os.path.join('Test', 'Annotations', ann_pic_name[:-4] + ".xml")
             tree = ET.parse(xml_path)
             root = tree.getroot()
 
@@ -506,23 +511,49 @@ def process_dataset(
             }
 
             # ---------- STORE OUTPUT ----------
-            image_tensor_list.append(transformed_pic)
+            #image_tensor_list.append(transformed_pic)
             object_locations_list.append(final_obj_location_dict)
 
             # ---------- WRITE CSV ----------
-            write_voc_csv(
-                csv_path=csv_path,
-                filename=ann_pic_name,
-                img_shape=transformed_pic_np.shape,
-                annotation_dict=final_obj_location_dict
-            )
+            # write_voc_csv(
+            #     csv_path=csv_path,
+            #     filename=ann_pic_name,
+            #     img_shape=transformed_pic_np.shape,
+            #     annotation_dict=final_obj_location_dict
+            # )           
+            
+  
+            filePath = datapath + ann_pic_name
+            shape,mode = save_tensor_as_image(transformed_pic,filePath)
+            
+            new_image_crop.append([ann_pic_name,filePath,shape[1],shape[0],mode])
+            with open(csv_path, "a", newline="") as f:
+                writer = csv.writer(f)
+                for k in final_obj_location_dict:
+                    label, box = final_obj_location_dict[k]
+                    ymin = box[0]
+                    xmin = box[1]
+                    ymax = box[2]
+                    xmax = box[3]
+                            
+                    writer.writerow([
+                        ann_pic_name,
+                        shape[1],
+                        shape[0],
+                        shape[2],
+                        label,
+                        xmin,
+                        ymin,
+                        xmax,
+                        ymax
+                    ])
 
             print(f"[{dataset_name.upper()}] {fi+1}/{count} <> {ann_pic_name}")
 
         except Exception as e:
             print(f"[{dataset_name.upper()} ERROR] {fi}/{count} <> {e}")
 
-    return image_tensor_list, filenames_list, object_locations_list
+    return new_image_crop, filenames_list, object_locations_list
 
 
 test_images, test_files, test_objs = process_dataset(
