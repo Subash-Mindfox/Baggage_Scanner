@@ -63,9 +63,11 @@ class AugmentationPipeline:
         
         for name, aug_config in augmentation_configs.items():
             # Skip if not enabled
-            if not aug_config.get('enabled', False):
-                print(f"Augmentation '{name}' is disabled. Skipping.")
-                continue
+            if isinstance(aug_config, bool):
+                if not aug_config:
+                    print(f"Augmentation '{name}' is disabled. Skipping.")                    
+                    continue
+                aug_config = {"enabled": True}                
             
             # Check if augmentation is registered
             if not AugmentationRegistry.is_registered(name):

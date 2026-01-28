@@ -213,8 +213,7 @@ def remove_white(
         img_hig = im.shape[0]
         num_of_seg = int(img_hig / seg_wid)
         seg_num, iter_count, br, all_where = 0, 0, 0, 0
-        v_dic = dict(zip(range(num_of_seg), [-1] * num_of_seg))
-        
+        v_dic = dict(zip([i for i in range(num_of_seg)], [-1 for i in range(num_of_seg)]))
         while seg_num <= num_of_seg - br + 2:
             if all_where >= img_hig:
                 break
@@ -223,59 +222,51 @@ def remove_white(
             
             if get_whiteness(this_seg, whiteness_tolerance) > v_whiteness_threshold:
                 br += 1
+                im = np.append(im[:seg_num*seg_wid,:], im[seg_num*seg_wid+seg_wid:,:], 0)
             else:
-                v_dic[seg_num] = iter_count
-                iter_count += 1
-                all_where += seg_wid
+                v_dic[iter_count] = iter_count - br
+                seg_num += 1
             
-            seg_num += 1
+            iter_count += 1
+            all_where += seg_wid
         
-        # Crop vertically
-        no_white_v_rows = []
-        for k, v in v_dic.items():
-            if v != -1:
-                no_white_v_rows.extend(range(k * seg_wid, (k + 1) * seg_wid))
-        
-        im = im[no_white_v_rows, :]
-        v_tran = v_dic
-    else:
-        # No vertical removal
-        num_of_seg = int(im.shape[0] / seg_wid)
-        v_tran = dict(zip(range(num_of_seg), range(num_of_seg)))
     
     # Horizontal whitespace removal
     if do_horizontal:
         img_wid = im.shape[1]
         num_of_seg = int(img_wid / seg_wid)
         seg_num, iter_count, br, all_where = 0, 0, 0, 0
-        h_dic = dict(zip(range(num_of_seg), [-1] * num_of_seg))
+        h_dic = dict(zip([i for i in range(num_of_seg)], [-1 for i in range(num_of_seg)]))
         
         while seg_num <= num_of_seg - br + 2:
             if all_where >= img_wid:
                 break
             
-            this_seg = im[:, seg_num * seg_wid:(seg_num + 1) * seg_wid]
+            this_seg = im[:,seg_num*seg_wid:seg_num*seg_wid+seg_wid]
             
-            if get_whiteness(this_seg, whiteness_tolerance) > h_whiteness_threshold:
+            if (get_whiteness(this_seg, whiteness_tolerance)>h_whiteness_threshold):
                 br += 1
+                im = np.append(im[:,:seg_num*seg_wid], im[:,seg_num*seg_wid+seg_wid:], 1)
             else:
-                h_dic[seg_num] = iter_count
-                iter_count += 1
-                all_where += seg_wid
-            
-            seg_num += 1
+                h_dic[iter_count] = iter_count - br
+                seg_num += 1
+            iter_count += 1
+            all_where += seg_wid
         
-        # Crop horizontally
-        no_white_h_cols = []
+        max_val_v_dic = max(v_dic.values())
+        for k, v in v_dic.items():
+            if (v == 0):
+                for i in range(k):
+                    v_dic[i] = 0
+            if (v == max_val_v_dic):
+                for i in range(k, len(v_dic)):
+                    v_dic[i] = max_val_v_dic
+        max_val_h_dic = max(h_dic.values())
         for k, v in h_dic.items():
-            if v != -1:
-                no_white_h_cols.extend(range(k * seg_wid, (k + 1) * seg_wid))
-        
-        im = im[:, no_white_h_cols]
-        h_tran = h_dic
-    else:
-        # No horizontal removal
-        num_of_seg = int(im.shape[1] / seg_wid)
-        h_tran = dict(zip(range(num_of_seg), range(num_of_seg)))
-    
-    return seg_wid, v_tran, h_tran, im
+            if (v == 0):
+                for i in range(k):
+                    h_dic[i] = 0
+            if (v == max_val_h_dic):
+                for i in range(k, len(h_dic)):
+                    h_dic[i] = max_val_h_dic
+    return (seg_wid, h_dic, v_dic, im)

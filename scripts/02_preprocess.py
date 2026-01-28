@@ -7,7 +7,7 @@ transforms bounding boxes, and saves preprocessed data.
 
 import sys
 import os
-
+os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 # Add parent directory to path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
@@ -187,47 +187,42 @@ def process_dataset(
             ])
             
             # Transform bounding boxes if whitespace was removed
-            if whitespace_remover.enabled and seg_size is not None:
-                w_bbox = []
-                for box in bbox0:
-                    y_min, x_min, y_max, x_max = box
-                    
-                    # Map to segments
-                    y_min_seg = max(y_min // seg_size, min(v_tran.keys()))
-                    x_min_seg = max(x_min // seg_size, min(h_tran.keys()))
-                    y_max_seg = min(y_max // seg_size, max(v_tran.keys()))
-                    x_max_seg = min(x_max // seg_size, max(h_tran.keys()))
-                    
-                    # Find nearest non-removed segments
-                    if v_tran[y_min_seg] == -1:
-                        y_min_seg = get_nearest_obj(v_tran, y_min_seg)
-                    if h_tran[x_min_seg] == -1:
-                        x_min_seg = get_nearest_obj(h_tran, x_min_seg)
-                    if v_tran[y_max_seg] == -1:
-                        y_max_seg = get_nearest_obj(v_tran, y_max_seg)
-                    if h_tran[x_max_seg] == -1:
-                        x_max_seg = get_nearest_obj(h_tran, x_max_seg)
-                    
-                    # Calculate new coordinates
-                    w_ymin = seg_size * v_tran[y_min_seg] + y_min % seg_size
-                    w_xmin = seg_size * h_tran[x_min_seg] + x_min % seg_size
-                    w_ymax = seg_size * v_tran[y_max_seg] + y_max % seg_size
-                    w_xmax = seg_size * h_tran[x_max_seg] + x_max % seg_size
-                    
-                    w_bbox.append([w_xmin, w_ymin, w_xmax, w_ymax])
+            w_bbox = []
+            for box in bbox0:
+                y_min, x_min, y_max, x_max = box
                 
-                # Rotate boxes (90-degree rotation)
-                rot_boxes = []
-                for box in w_bbox:
-                    x1, y1, x2, y2 = box
-                    rx1, ry1 = rotated_this(x1, y1, no_whi_np.shape[1], no_whi_np.shape[0])
-                    rx2, ry2 = rotated_this(x2, y2, no_whi_np.shape[1], no_whi_np.shape[0])
-                    rot_boxes.append([ry2, rx1, ry1, rx2])
+                # Map to segments
+                y_min_seg = max(y_min // seg_size, min(v_tran.keys()))
+                x_min_seg = max(x_min // seg_size, min(h_tran.keys()))
+                y_max_seg = min(y_max // seg_size, max(v_tran.keys()))
+                x_max_seg = min(x_max // seg_size, max(h_tran.keys()))
                 
-                # Reflect boxes
-                h_max, w_max, _ = no_whi_np.shape
-                W_boxes = []
-                for bx in rot_boxes:
+                # Find nearest non-removed segments
+                y_min_seg = resolve_seg(v_tran, y_min_seg)
+                y_max_seg = resolve_seg(v_tran, y_max_seg)
+                x_min_seg = resolve_seg(h_tran, x_min_seg)
+                x_max_seg = resolve_seg(h_tran, x_max_seg)
+                
+                # Calculate new coordinates
+                w_ymin = seg_size * v_tran[y_min_seg] + y_min % seg_size
+                w_xmin = seg_size * h_tran[x_min_seg] + x_min % seg_size
+                w_ymax = seg_size * v_tran[y_max_seg] + y_max % seg_size
+                w_xmax = seg_size * h_tran[x_max_seg] + x_max % seg_size
+                
+                w_bbox.append([w_xmin, w_ymin, w_xmax, w_ymax])
+            
+            # Rotate boxes (90-degree rotation)
+            rot_boxes = []
+            for box in w_bbox:
+                x1, y1, x2, y2 = box
+                rx1, ry1 = rotated_this(x1, y1, no_whi_np.shape[1], no_whi_np.shape[0])
+                rx2, ry2 = rotated_this(x2, y2, no_whi_np.shape[1], no_whi_np.shape[0])
+                rot_boxes.append([ry2, rx1, ry1, rx2])
+            
+            # Reflect boxes
+            h_max, w_max, _ = no_whi_np.shape
+            W_boxes = []
+            for bx in rot_boxes:
                     wmin_, hmin_, wmax_, hmax_ = bx
                     W_boxes.append([
                         reflect(wmax_, w_max),
@@ -235,9 +230,7 @@ def process_dataset(
                         reflect(wmin_, w_max),
                         hmax_
                     ])
-            else:
-                # No whitespace removal - use original boxes
-                W_boxes = [[v["xmin"], v["ymin"], v["xmax"], v["ymax"]] for v in dim_dic.values()]
+           
             
             # Apply base transform
             transformed_pic = base_transform(np_to_torch(no_whi_np))
@@ -301,6 +294,9 @@ def process_dataset(
     
     return new_image_crop, filenames_list, object_locations_list
 
+def resolve_seg(tran, seg):
+    seg = min(seg, len(tran) - 1)   # clamp to last index
+    return get_nearest_obj(tran, seg) if tran[seg] == -1 else seg
 
 def main():
     """Main preprocessing function."""

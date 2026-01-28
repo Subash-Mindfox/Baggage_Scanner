@@ -6,6 +6,7 @@ This script loads preprocessed images and applies configured augmentations.
 
 import sys
 import os
+os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 
 # Add parent directory to path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
