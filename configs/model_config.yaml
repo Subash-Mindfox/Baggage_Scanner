@@ -1,0 +1,100 @@
+model:
+  # Model architecture selection
+  architecture: "faster_rcnn"  # Options: faster_rcnn, yolo, ssd, custom
+  
+  # Number of classes (including background)
+  num_classes: 2  # Adjust based on your dataset
+  
+  # Pretrained weights
+  use_pretrained: true
+  pretrained_backbone: "resnet50"  # Options: resnet50, resnet101, mobilenet
+  
+  # Model-specific parameters
+  faster_rcnn:
+    backbone: "resnet50"
+    trainable_backbone_layers: 3
+    min_size: 584
+    max_size: 688
+    rpn_pre_nms_top_n_train: 2000
+    rpn_post_nms_top_n_train: 2000
+    rpn_nms_thresh: 0.7
+    box_detections_per_img: 100
+  
+  yolo:
+    version: "v5"  # Options: v5, v8
+    model_size: "m"  # Options: n, s, m, l, x
+    conf_threshold: 0.25
+    iou_threshold: 0.45
+  
+  custom:
+    # Add your custom model parameters here
+    backbone: "custom_backbone"
+    neck: "fpn"
+    head: "custom_head"
+
+training:
+  # Training hyperparameters
+  batch_size: 4
+  num_epochs: 50
+  learning_rate: 0.001
+  weight_decay: 0.0005
+  momentum: 0.9
+  
+  # Learning rate scheduler
+  lr_scheduler:
+    type: "step"  # Options: step, cosine, plateau
+    step_size: 10
+    gamma: 0.1
+  
+  # Optimizer
+  optimizer: "sgd"  # Options: sgd, adam, adamw
+  
+  # Data loading
+  num_workers: 4
+  pin_memory: true
+  
+  # Gradient clipping
+  gradient_clip:
+    enabled: true
+    max_norm: 10.0
+  
+  # Early stopping
+  early_stopping:
+    enabled: true
+    patience: 10
+    min_delta: 0.001
+  
+  # Checkpoint saving
+  checkpoint:
+    save_best_only: true
+    save_frequency: 5  # Save every N epochs
+    metric: "mAP"  # Metric to monitor for best model
+  
+  # Mixed precision training
+  mixed_precision:
+    enabled: false
+
+validation:
+  # Validation settings
+  val_frequency: 1  # Validate every N epochs
+  val_batch_size: 4
+  
+  # Metrics to compute
+  metrics:
+    - "mAP"
+    - "precision"
+    - "recall"
+    - "f1_score"
+  
+  # IoU thresholds for metrics
+  iou_thresholds: [0.5, 0.75]
+
+inference:
+  # Inference settings
+  confidence_threshold: 0.5
+  nms_threshold: 0.4
+  max_detections: 100
+  
+  # Visualization
+  visualize_results: true
+  save_predictions: true

@@ -1,0 +1,57 @@
+augmentations:
+  # Global augmentation settings
+  enabled: true
+  save_to_disk: true  # Save augmented images to disk instead of keeping in memory
+  
+  # ColorJitter Augmentation
+  color_jitter:
+    enabled: true
+    num_samples: 1000
+    params:
+      brightness: [0.8, 2.0]
+      contrast: [0.8, 2.0]
+      saturation: [0.8, 2.0]
+      hue: [-0.1, 0.1]
+    random_seed: 47
+  
+  # Gaussian Blur Augmentation
+  gaussian_blur:
+    enabled: true
+    num_samples: 500
+    params:
+      kernel_sizes: [3, 7]
+      sigma_range: [0.1, 4.0]
+    random_seed: 48
+  
+  # Flip Augmentation
+  flip:
+    enabled: true
+    num_samples: 10
+    types: ['hflip', 'vflip', 'hvflip']  # horizontal, vertical, both
+    random_seed: 49
+  
+  # Rotation Augmentation (disabled by default - example for custom augmentation)
+  rotation:
+    enabled: false
+    num_samples: 200
+    params:
+      angles: [-15, -10, -5, 5, 10, 15]
+    random_seed: 50
+  
+  # Random Crop Augmentation (disabled by default)
+  random_crop:
+    enabled: false
+    num_samples: 300
+    params:
+      crop_ratio: [0.8, 0.95]  # Percentage of original size
+    random_seed: 51
+  
+  # Noise Addition (disabled by default)
+  noise:
+    enabled: false
+    num_samples: 200
+    params:
+      noise_type: "gaussian"  # gaussian, salt_pepper
+      mean: 0
+      std: 0.1
+    random_seed: 52

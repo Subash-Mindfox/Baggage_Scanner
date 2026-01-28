@@ -1,0 +1,29 @@
+preprocessing:
+  # Whitespace removal configuration
+  whitespace_removal:
+    enabled: true  # Set to false to skip whitespace removal
+    params:
+      do_vertical: true
+      do_horizontal: true
+      v_whiteness_threshold: 99.9
+      h_whiteness_threshold: 99.9
+      seg_width: 1
+      whiteness_tolerance: 33
+  
+  # Base transformation settings
+  base_transform:
+    enabled: true
+    resize: [584, 688]  # [height, width]
+    rgb_means: [104, 117, 123]
+    transform_type: "medium"  # Options: light, medium, dark
+  
+  # Image quality settings
+  image_output:
+    format: "jpg"
+    quality: 95
+  
+  # Bounding box transformation
+  bbox_transform:
+    enabled: true
+    handle_rotation: true
+    handle_reflection: true

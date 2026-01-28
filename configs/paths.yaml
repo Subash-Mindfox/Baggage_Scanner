@@ -1,5 +1,29 @@
 paths:
-  trainingImages : Train\Images
-  trainningAnnot_file : Train\train_annotations.csv
-  testImages : Test\Images
-  testAnnot_file : Test\test_annotations.csv
+  # Raw data paths (original, untouched)
+  raw_data_root: "data/raw"
+  
+  # Training data
+  trainingImages: "data/raw/Train/Images"
+  trainingAnnotations: "data/raw/Train/Annotations"
+  trainningAnnot_file: "data/raw/Train/_annotations.csv"
+  
+  # Test data
+  testImages: "data/raw/Test/Images"
+  testAnnotations: "data/raw/Test/Annotations"
+  testAnnot_file: "data/raw/Test/_annotations.csv"
+  
+  # Temporary/Processed data
+  temp_root: "data/temp"
+  
+  # Preprocessed data (after whitespace removal)
+  preprocessed_train: "data/temp/preprocessed/Train"
+  preprocessed_test: "data/temp/preprocessed/Test"
+  
+  # Augmented data
+  augmented_root: "data/temp/augmented"
+  
+  # Outputs
+  checkpoints: "checkpoints"
+  logs: "outputs/logs"
+  metrics: "outputs/metrics"
+  visualizations: "outputs/visualizations"
