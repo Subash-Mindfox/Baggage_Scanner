@@ -46,12 +46,42 @@ augmentations:
       crop_ratio: [0.8, 0.95]  # Percentage of original size
     random_seed: 51
   
-  # Noise Addition (disabled by default)
-  noise:
+  # Gaussian Noise (entire image)
+  gaussian_noise:
     enabled: false
-    num_samples: 200
+    num_samples: 20
     params:
-      noise_type: "gaussian"  # gaussian, salt_pepper
-      mean: 0
-      std: 0.1
+      mean_range: [0.5, 1.5]
+      sigma_range: [20.0, 70.0]
+    random_seed: 50
+  
+  # Gaussian Noise to Bounding Boxes only
+  gaussian_noise_bbox:
+    enabled: false
+    num_samples: 10
+    params:
+      mean_range: [0.0, 1.0]
+      sigma_range: [5.0, 15.0]
+    random_seed: 51
+  
+  # Random Erasing
+  random_erasing:
+    enabled: false
+    num_samples: 20
+    params:
+      sl: 0.02  # Min proportion of erased area
+      sh: 0.3   # Max proportion of erased area
+      r1: 0.3   # Min aspect ratio
+      max_erasing_area_per_bbox: 0.7  # Max % of any bbox that can be erased
+      attempts: 100
     random_seed: 52
+  
+  # Random Blocking (Mean-value patches with Gaussian blur)
+  random_blocking:
+    enabled: false
+    num_samples: 20  # Or use blocked_percentage instead
+    params:
+      blocked_percentage: 0.1  # Apply to 10% of images (if num_samples not used)
+      probability: 1.0  # Probability of applying block (usually 1.0)
+      max_patch: 0.5  # Max proportion of image to block (auto-calculated based on smallest bbox)
+    random_seed: 53
