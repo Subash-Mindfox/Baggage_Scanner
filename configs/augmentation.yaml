@@ -40,7 +40,7 @@ augmentations:
   
   # Random Crop Augmentation (disabled by default)
   random_crop:
-    enabled: false
+    enabled: true
     num_samples: 300
     params:
       crop_ratio: [0.8, 0.95]  # Percentage of original size
@@ -48,7 +48,7 @@ augmentations:
   
   # Gaussian Noise (entire image)
   gaussian_noise:
-    enabled: false
+    enabled: true
     num_samples: 20
     params:
       mean_range: [0.5, 1.5]
@@ -57,7 +57,7 @@ augmentations:
   
   # Gaussian Noise to Bounding Boxes only
   gaussian_noise_bbox:
-    enabled: false
+    enabled: true
     num_samples: 10
     params:
       mean_range: [0.0, 1.0]
@@ -66,7 +66,7 @@ augmentations:
   
   # Random Erasing
   random_erasing:
-    enabled: false
+    enabled: true
     num_samples: 20
     params:
       sl: 0.02  # Min proportion of erased area
@@ -78,7 +78,7 @@ augmentations:
   
   # Random Blocking (Mean-value patches with Gaussian blur)
   random_blocking:
-    enabled: false
+    enabled: true
     num_samples: 20  # Or use blocked_percentage instead
     params:
       blocked_percentage: 0.1  # Apply to 10% of images (if num_samples not used)

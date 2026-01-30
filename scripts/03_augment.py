@@ -18,7 +18,15 @@ from src.utils.config_loader import load_config
 from src.utils.logger import setup_logger
 
 # Import augmentation implementations to register them
-from src.augmentation import color_jitter, flip_augmentor
+from src.augmentation import (
+    color_jitter,
+    flip_augmentor,
+    gaussian_blur,
+    gaussian_noise,
+    gaussian_noise_bbox,
+    random_erasing,
+    random_blocking
+)
 
 
 def main():

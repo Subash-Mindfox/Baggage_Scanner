@@ -1,0 +1,19 @@
+{
+  "class_to_idx": {
+    "background": 0,
+    "gun": 1,
+    "knife": 2,
+    "plier": 3,
+    "scissor": 4,
+    "wrench": 5
+  },
+  "idx_to_class": {
+    "0": "background",
+    "1": "gun",
+    "2": "knife",
+    "3": "plier",
+    "4": "scissor",
+    "5": "wrench"
+  },
+  "num_classes": 6
+}
