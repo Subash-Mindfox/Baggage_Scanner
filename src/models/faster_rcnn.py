@@ -4,7 +4,7 @@ Faster R-CNN model implementation.
 
 import torch
 import torchvision
-from torchvision.models.detection import fasterrcnn_resnet50_fpn
+from torchvision.models.detection import fasterrcnn_resnet50_fpn,FasterRCNN_ResNet50_FPN_Weights
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 from typing import Dict, Any, Optional, List
 
@@ -32,9 +32,23 @@ class FasterRCNNModel(BaseDetectionModel):
         # Get model-specific config
         model_config = config.get('faster_rcnn', {})
         
+        use_pretrained = config.get('use_pretrained', True)
+        weights = (
+            FasterRCNN_ResNet50_FPN_Weights.DEFAULT
+            if use_pretrained else None
+        )
+        
         # Load pretrained model
         self.model = fasterrcnn_resnet50_fpn(
-            pretrained=config.get('use_pretrained', True)
+            weights=weights,
+
+            # --- RPN configuration ---
+            rpn_pre_nms_top_n_train=config.get('rpn_pre_nms_top_n_train', 2000),
+            rpn_post_nms_top_n_train=config.get('rpn_post_nms_top_n_train', 2000),
+            rpn_nms_thresh=config.get('rpn_nms_thresh', 0.7),
+
+            # --- ROIHeads / detection configuration ---
+            box_detections_per_img=config.get('box_detections_per_img', 100),
         )
         
         # Replace the classifier head
@@ -66,16 +80,16 @@ class FasterRCNNModel(BaseDetectionModel):
             self.model.transform.max_size = model_config['max_size']
         
         # Configure RPN parameters
-        if 'rpn_pre_nms_top_n_train' in model_config:
-            self.model.rpn.pre_nms_top_n['training'] = model_config['rpn_pre_nms_top_n_train']
-        if 'rpn_post_nms_top_n_train' in model_config:
-            self.model.rpn.post_nms_top_n['training'] = model_config['rpn_post_nms_top_n_train']
-        if 'rpn_nms_thresh' in model_config:
-            self.model.rpn.nms_thresh = model_config['rpn_nms_thresh']
+        # if 'rpn_pre_nms_top_n_train' in model_config:
+        #     self.model.rpn.pre_nms_top_n['training'] = model_config['rpn_pre_nms_top_n_train']
+        # if 'rpn_post_nms_top_n_train' in model_config:
+        #     self.model.rpn.post_nms_top_n['training'] = model_config['rpn_post_nms_top_n_train']
+        # if 'rpn_nms_thresh' in model_config:
+        #     self.model.rpn.nms_thresh = model_config['rpn_nms_thresh']
         
-        # Configure detection parameters
-        if 'box_detections_per_img' in model_config:
-            self.model.roi_heads.detections_per_img = model_config['box_detections_per_img']
+        # # Configure detection parameters
+        # if 'box_detections_per_img' in model_config:
+        #     self.model.roi_heads.detections_per_img = model_config['box_detections_per_img']
     
     def forward(
         self,
