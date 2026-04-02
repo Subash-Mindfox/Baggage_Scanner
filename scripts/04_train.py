@@ -368,7 +368,7 @@ def train_model(
     # Early stopping variables
     best_fold_val_loss = float('inf')
     epochs_without_improvement = 0
-    patience = 3
+    patience = 10
     best_epoch = 0
     total_training_time = 0.0
     
